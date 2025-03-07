@@ -1,4 +1,4 @@
-package es.ubu.SSDD_P01;
+package es.ubu.lsi;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
