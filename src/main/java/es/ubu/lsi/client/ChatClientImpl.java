@@ -7,7 +7,9 @@ import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * Implementación del cliente de chat.
@@ -24,6 +26,7 @@ public class ChatClientImpl implements ChatClient {
 	private ObjectOutputStream outputStream;
 	private ObjectInputStream inputStream;
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+	private Set<String> blockedUsers = new HashSet<>(); // Lista de usuarios bloqueados
 
 	/**
 	 * Constructor del cliente de chat.
@@ -102,6 +105,18 @@ public class ChatClientImpl implements ChatClient {
 					client.sendMessage(new ChatMessage(client.id, MessageType.LOGOUT, ""));
 					client.disconnect();
 					break;
+				} else if (message.startsWith("ban ")) {
+					String userToBan = message.substring(4).trim();
+					client.blockedUsers.add(userToBan);
+					client.sendMessage(new ChatMessage(client.id, MessageType.MESSAGE,
+							client.username + " ha baneado a " + userToBan));
+					System.out.println("Has baneado a " + userToBan);
+				} else if (message.startsWith("unban ")) {
+					String userToUnban = message.substring(6).trim();
+					client.blockedUsers.remove(userToUnban);
+					client.sendMessage(new ChatMessage(client.id, MessageType.MESSAGE,
+							client.username + " ha desbloqueado a " + userToUnban));
+					System.out.println("Has desbloqueado a " + userToUnban);
 				} else {
 					client.sendMessage(
 							new ChatMessage(client.id, MessageType.MESSAGE, "[" + client.username + "]: " + message));
@@ -120,7 +135,11 @@ public class ChatClientImpl implements ChatClient {
 				while (carryOn) {
 					ChatMessage msg = (ChatMessage) inputStream.readObject();
 					String timestamp = sdf.format(new Date());
-					System.out.println("[" + timestamp + "] " + msg.getMessage());
+					// La primera palabra del mensaje es el nombre del usuario
+					String sender = msg.getMessage().split(" ")[0].replace("[", "").replace("]:", "");
+					if (!blockedUsers.contains(sender)) {
+						System.out.println("[" + timestamp + "] " + msg.getMessage());
+					}
 				}
 			} catch (IOException | ClassNotFoundException e) {
 				System.err.println("Sesión cerrada: (" + e.getMessage() + ")");
