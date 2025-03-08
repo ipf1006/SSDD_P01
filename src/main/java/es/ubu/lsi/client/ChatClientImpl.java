@@ -5,7 +5,9 @@ import es.ubu.lsi.common.ChatMessage.MessageType;
 
 import java.io.*;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
+import java.util.Date;
 
 /**
  * Implementación del cliente de chat.
@@ -21,6 +23,7 @@ public class ChatClientImpl implements ChatClient {
 	private Socket socket;
 	private ObjectOutputStream outputStream;
 	private ObjectInputStream inputStream;
+	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
 	/**
 	 * Constructor del cliente de chat.
@@ -40,6 +43,11 @@ public class ChatClientImpl implements ChatClient {
 			outputStream = new ObjectOutputStream(socket.getOutputStream());
 			inputStream = new ObjectInputStream(socket.getInputStream());
 			System.out.println("Conectado al servidor en " + server + ":" + PORT);
+
+			// Envia el nombre de usuario inmediatamente después de conectarse
+			outputStream.writeObject(new ChatMessage(-1, MessageType.MESSAGE, username));
+			outputStream.flush();
+
 			new Thread(new ChatClientListener()).start();
 			return true;
 		} catch (IOException e) {
@@ -111,10 +119,11 @@ public class ChatClientImpl implements ChatClient {
 			try {
 				while (carryOn) {
 					ChatMessage msg = (ChatMessage) inputStream.readObject();
-					System.out.println(msg.getId() + ": " + msg.getMessage());
+					String timestamp = sdf.format(new Date());
+					System.out.println("[" + timestamp + "] " + msg.getMessage());
 				}
 			} catch (IOException | ClassNotFoundException e) {
-				System.err.println("Error en el listener: " + e.getMessage());
+				System.err.println("Sesión cerrada: (" + e.getMessage() + ")");
 			}
 		}
 	}
