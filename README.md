@@ -24,3 +24,8 @@ Cada cliente debe ejecutarse en una terminal:
 ```sh
 mvn exec:java@client
 ```
+
+### 📜 Generar la documentación Javadoc
+```sh
+ant javadoc
+```
