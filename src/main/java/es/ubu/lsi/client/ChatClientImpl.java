@@ -78,7 +78,14 @@ public class ChatClientImpl implements ChatClient {
 			System.err.println("Error al cerrar conexión: " + e.getMessage());
 		}
 	}
-
+	
+	/**
+	 * Método principal que inicia el cliente de chat.
+	 * Solicita la dirección del servidor y el nombre de usuario.
+	 * Posteriormente intenta establecer una conexión con el servidor y permite el envío de mensajes.
+	 *
+	 * @param args Argumentos de línea de comandos.
+	 */
 	public static void main(String[] args) {
 		try (Scanner scanner = new Scanner(System.in)) {
 			System.out.print("Ingrese el servidor (IP o nombre de máquina, por defecto localhost): ");

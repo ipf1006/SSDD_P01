@@ -80,6 +80,12 @@ public class ChatServerImpl implements ChatServer {
 		System.out.println("Cliente " + id + " eliminado.");
 	}
 
+	/**
+	 * Método principal que inicia el servidor de chat.
+	 * Crea una instancia del servidor y lo inicia en el puerto por defecto.
+	 *
+	 * @param args Argumentos de línea de comandos (no utilizados).
+	 */
 	public static void main(String[] args) {
 		ChatServerImpl server = new ChatServerImpl(DEFAULT_PORT);
 		server.startup();
