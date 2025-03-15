@@ -1,1 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<project name="SSDD_P01" default="javadoc" basedir=".">
+
+	<!-- Definición de propiedades -->
+	<property name="src.dir" value="src/main/java" />
+	<property name="doc.dir" value="doc" />
+
+	<!-- Limpieza de la documentación generada anteriormente -->
+	<target name="clean">
+		<delete dir="${doc.dir}" />
+	</target>
+
+	<!-- Generar Javadoc -->
+	<target name="javadoc" depends="clean">
+		<mkdir dir="${doc.dir}" />
+		<javadoc destdir="${doc.dir}" sourcepath="${src.dir}">
+		    <package name="es.ubu.lsi.server"/>
+		    <package name="es.ubu.lsi.client"/>
+		    <package name="es.ubu.lsi.common"/>
+		</javadoc>
+		<echo message="JAVADOC GENERADO CORRECTAMENTE EN LA CARPETA 'doc/'"/>
+	</target>
+
+</project>
